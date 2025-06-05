@@ -1,19 +1,8 @@
 from flask import Flask, request, jsonify
 import requests
 
-app = Flask(__name__)
-
 # GitLab project info and token
-# PROJECT_ID = 70379856
 GITLAB_TOKEN = "glpat-B-JVVqQs7LqsPxySefzx"  # Replace with your actual token
-
-
-@app.route("/main")
-def main_page():
-    return "Welcome to the main page!"
-
-
-@app.route('/gitlab-webhook', methods=['POST'])
 def gitlab_webhook():
     data = request.json
 
@@ -35,19 +24,16 @@ def gitlab_webhook():
         print("Received GitLab merge request event:")
         print(f"Action: {action}, State: {state}") 
         print(f"Fetching diff between {target_branch} → {source_branch}...")
-        fetch_and_print_diff(source_branch, target_branch)
-
-        if action == 'merge' and state == 'merged':
-            print("✅ A merge request was merged!")
+        chnages_summary = fetch_and_print_diff(source_branch, target_branch,PROJECT_ID)
 
             # Get source and target branch from the merge request
             # source_branch = mr_data.get('source_branch')
             # target_branch = mr_data.get('target_branch')
 
-    return jsonify({'status': 'Received'}), 200
+    return chnages_summary
 
 
-def fetch_and_print_diff(source_branch, target_branch):
+def fetch_and_print_diff(source_branch, target_branch,PROJECT_ID):
     url = f"https://gitlab.com/api/v4/projects/{PROJECT_ID}/repository/compare" 
     params = {
         "from": target_branch,  # base branch
@@ -72,7 +58,5 @@ def fetch_and_print_diff(source_branch, target_branch):
             print("-" * 40)
     else:
         print("❌ Failed to fetch diff:", response.status_code, response.text)
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+        
+    return change_summary , file_path
