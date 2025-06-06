@@ -9,7 +9,7 @@ def initialize_vertex_ai():
         project_id (str): The Google Cloud project ID.
         location (str): The location for Vertex AI resources.
     """
-    aiplatform.init(project=project_id, location="us-central1")
+    aiplatform.init(project="agent-development-461516", location="us-central1")
     
 
 def call_vertex_ai_model(prompt):

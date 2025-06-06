@@ -1,3 +1,4 @@
+# Prompt builder function
 def build_ai_prompt(file_path, code_diff, lang):
     prompt = f"""You are an experienced software engineer reviewing a code change. Please analyze the following {lang} diff:
 
