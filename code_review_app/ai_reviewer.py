@@ -1,5 +1,6 @@
 from google.cloud import aiplatform
 from google.cloud.aiplatform.gapic.schema import predict
+import google.generativeai as genai
 
 def initialize_vertex_ai():
     """
@@ -23,11 +24,14 @@ def call_vertex_ai_model(prompt):
     Returns:
         The prediction response from the model.
     """
-    model = aiplatform.Model(model_name="publishers/google/models/gemini-1.5-pro-001")
-    response = model.predict([{
-        "content": prompt,
-        "role": "user"
-    }])
+    # model = aiplatform.Model(model_name="gemini-1.5-pro-001")
+    # response = model.predict([{
+    #     "content": prompt,
+    #     "role": "user"
+    # }])
+    model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-001")
+    response = model.generate_content(prompt)
+    
     
     if response and response.text:
         return response.text

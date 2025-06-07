@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import requests
 
 # GitLab project info and token
-GITLAB_TOKEN = "glpat-B-JVVqQs7LqsPxySefzx"  # Replace with your actual token
+GITLAB_TOKEN = "glpat-U2ZgNMXY1Rs4qe8U_7hv"  # Replace with your actual token
 def gitlab_webhook():
     data = request.json
 
@@ -11,8 +11,8 @@ def gitlab_webhook():
         mr_data = data['object_attributes']
         action = mr_data.get('action')
         state = mr_data.get('state')
-        
-        
+
+        MERGE_REQUEST_IID = mr_data.get('iid')
         PROJECT_ID = mr_data.get('source_project_id')  # Get project ID from the merge request data
         if not PROJECT_ID:
             print("❌ Project ID not found in the merge request data.")
@@ -24,13 +24,13 @@ def gitlab_webhook():
         print("Received GitLab merge request event:")
         print(f"Action: {action}, State: {state}") 
         print(f"Fetching diff between {target_branch} → {source_branch}...")
-        chnages_summary = fetch_and_print_diff(source_branch, target_branch,PROJECT_ID)
+        chnages_summary , file_path = fetch_and_print_diff(source_branch, target_branch,PROJECT_ID)
 
             # Get source and target branch from the merge request
             # source_branch = mr_data.get('source_branch')
             # target_branch = mr_data.get('target_branch')
 
-    return chnages_summary
+    return chnages_summary , file_path , MERGE_REQUEST_IID , PROJECT_ID , GITLAB_TOKEN
 
 
 def fetch_and_print_diff(source_branch, target_branch,PROJECT_ID):
