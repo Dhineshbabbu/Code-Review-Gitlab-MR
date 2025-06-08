@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import gitlab
 import json
+import ast
 import re
 from lang_detector import detect_language_details
 from webhook_listener import gitlab_webhook
@@ -19,24 +20,16 @@ def gitlab_webhook_listener():
     initialize_vertex_ai()
     ai_feedback = call_vertex_ai_model(prompt)
     
-    print("🤖 AI Feedback:");print(ai_feedback)
-    pattern = r'(\d+): "- \[(.*?)\](.*?)"'
-    matches = re.findall(pattern, ai_feedback)
-    feedback_dict = {}
-    for key, category, message in matches:
-        key = int(key)  # Convert key to integer
-        if key in feedback_dict:
-            feedback_dict[key].append((category, message))
-        else:
-            feedback_dict[key] = [(category, message)]
-
-    # Pretty-print the resulting dictionary
-    formatted_dict = json.dumps(feedback_dict, indent=4)
-    print(formatted_dict)
+    print("🤖 AI Feedback:")
+    print(ai_feedback)
+    feedback_dict = ast.literal_eval(ai_feedback)
+    print(feedback_dict)
     print("=" * 40)
 
     print("Sending the feedback in Gitlab..")
-    result = post_comment_in_gitlab(file_path , MERGE_REQUEST_IID , PROJECT_ID , formatted_dict)
+    result = post_comment_in_gitlab(file_path , MERGE_REQUEST_IID , PROJECT_ID , feedback_dict)
+    
+    return result,200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)  # Run the Flask app on port 5000

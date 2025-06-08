@@ -58,7 +58,6 @@ def post_comment_in_gitlab(FILE_PATH , MERGE_REQUEST_IID , PROJECT_ID  , COMMENT
         try:
             discussion = mr.discussions.create(note_data)
             print(f"✅ Comment added successfully for line {line_number}!")
-            return "Success"
         except Exception as e:
             print(f"❌ Failed to add comment for line {line_number}: {e}")
-            return "Failed"
+    return "Comments posted successfully"
