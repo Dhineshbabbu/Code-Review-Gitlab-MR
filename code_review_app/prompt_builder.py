@@ -6,13 +6,16 @@ def build_ai_prompt(file_path, code_diff, lang):
     {code_diff}
     </file>
 
-    Provide concise, actionable feedback:
+    Provide concise, actionable feedback in the following format:
     - Identify bugs or potential errors
     - Suggest naming improvements
     - Mention possible security concerns
     - Recommend best practices
-    - If no issues found, say: "✅ No suggestions for this file."
 
-    Only respond with the review suggestions and do not add extra explanations.
+    Return your feedback as a dictionary where keys are line numbers and values are the corresponding review comments.
+    If a line has no issues, do not include it in the dictionary.
+    If no issues are found at all, return: "✅ No suggestions for this file."
+
+    Only return the structured feedback in the specified format, without any extra explanations.
     """
     return prompt.strip()
