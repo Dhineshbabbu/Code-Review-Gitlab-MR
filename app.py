@@ -3,11 +3,11 @@ import gitlab
 import json
 import ast
 import re
-from lang_detector import detect_language_details
-from webhook_listener import gitlab_webhook
-from prompt_builder import build_ai_prompt
-from ai_reviewer import call_vertex_ai_model , initialize_vertex_ai
-from post_comment_in_gitlab import post_comment_in_gitlab
+from code_review_app.lang_detector import detect_language_details
+from code_review_app.webhook_listener import gitlab_webhook
+from code_review_app.prompt_builder import build_ai_prompt
+from code_review_app.ai_reviewer import call_vertex_ai_model , initialize_vertex_ai
+from code_review_app.post_comment_in_gitlab import post_comment_in_gitlab
 
 app = Flask(__name__)
 @app.route('/gitlab-webhook', methods=['POST'])
@@ -22,12 +22,12 @@ def gitlab_webhook_listener():
     
     print("🤖 AI Feedback:")
     print(ai_feedback)
-    feedback_dict = ast.literal_eval(ai_feedback)
-    print(feedback_dict)
+    # feedback_dict = ast.literal_eval(ai_feedback)
+    print(ai_feedback)
     print("=" * 40)
 
     print("Sending the feedback in Gitlab..")
-    result = post_comment_in_gitlab(file_path , MERGE_REQUEST_IID , PROJECT_ID , feedback_dict)
+    result = post_comment_in_gitlab(file_path , MERGE_REQUEST_IID , PROJECT_ID , ai_feedback)
     
     return result,200
 
