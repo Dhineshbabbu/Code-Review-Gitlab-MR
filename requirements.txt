@@ -4,4 +4,3 @@ requests
 pygments
 google-cloud-aiplatform
 google-generativeai
-numpy

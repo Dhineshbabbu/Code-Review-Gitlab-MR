@@ -1,6 +1,6 @@
 # .github/workflows/deploy-to-gcp-app-engine.yml
 
-name: Deploy Python App to Google App Engine - gemprice
+name: Deploy Python App to Google App Engine - Gitlab Webhook Listener
 
 # Define when this workflow should run.
 on:
