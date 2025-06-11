@@ -1,0 +1,7 @@
+Flask
+python-gitlab
+requests
+pygments
+google-cloud-aiplatform
+google-generativeai
+numpy
