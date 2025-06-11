@@ -1,7 +1,4 @@
-# .github/workflows/deploy-to-gcp-app-engine.yml
-
-name: Deploy Python App to Google App Engine - Gitlab Webhook Listener
-
+name: Deploy Python App to Google App Engine - Gitlab Webhook
 # Define when this workflow should run.
 on:
   push:
@@ -28,9 +25,21 @@ jobs:
         with:
           python-version: '3.9'
 
-      # Step 3: Install application dependencies from requirements.txt.
+      # Step 3: Install common system dependencies required by many Python packages.
+      # This step helps resolve 'metadata-generation-failed' errors for packages
+      # that require native libraries or build tools (e.g., for C extensions).
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          # build-essential: General build tools (compilers, make)
+          # python3-dev: Python header files needed for building some Python packages
+          # libgeos-dev: GEOS C library development files, specifically needed by packages like Shapely
+          sudo apt-get install -y build-essential python3-dev libgeos-dev
+          # Add any other specific libraries if your packages require them (e.g., libpq-dev for psycopg2, libxml2-dev for lxml)
+
+      # Step 4: Install application dependencies from requirements.txt.
       # Ensure you have a requirements.txt file in your repository root.
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install -r requirements.txt
 
   deploy:
@@ -42,7 +51,7 @@ jobs:
     environment:
       name: 'Production'
       # Provide a placeholder for the URL. The actual URL will be based on your GCP project ID.
-      url: https://agent-development-461516.appspot.com # Replace with your actual project ID
+      url: https://agent-development-461516.appspot.com # Your actual App Engine URL
 
     # Define necessary permissions for Workload Identity Federation.
     permissions:
@@ -80,4 +89,4 @@ jobs:
       - name: 'Deploy to Google App Engine'
         run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT_ID }} --quiet
         # '--project': Specifies the GCP project ID.
-        # '--quiet': Prevents interactive prompts during deployment, essential for CI/CD.
+        # '--quiet': Prevents interactive prompts during deployment, essential for CI/CD.
