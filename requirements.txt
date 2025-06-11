@@ -4,3 +4,4 @@ requests
 pygments
 google-cloud-aiplatform
 google-generativeai
+numpy==1.24.4
