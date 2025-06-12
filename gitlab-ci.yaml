@@ -1,0 +1,83 @@
+
+
+name: Deploy Python App to Google App Engine - Gitlab Webhook
+
+# Define when this workflow should run.
+on:
+  push:
+    # Trigger the workflow on pushes to the 'master' branch.
+    branches:
+      - master
+  workflow_dispatch:
+    # Allows you to manually trigger the workflow from the GitHub Actions tab.
+
+jobs:
+  build:
+    # This job runs on the latest Ubuntu runner.
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository code.
+      - uses: actions/checkout@v4
+
+      # Step 2: Set up the Python environment.
+      # Using Python 3.9 to match the runtime specified in your app.yaml.
+      # You can change this to '3.11' or any other version supported by App Engine
+      # if your app.yaml is also updated to match.
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      # Step 3: Install application dependencies from requirements.txt.
+      # Ensure you have a requirements.txt file in your repository root.
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+  deploy:
+    # This job also runs on the latest Ubuntu runner.
+    runs-on: ubuntu-latest
+    # This job depends on the 'build' job completing successfully.
+    needs: build
+    # Define the deployment environment for GitHub.
+    environment:
+      name: 'Production'
+      # Provide a placeholder for the URL. The actual URL will be based on your GCP project ID.
+      url: https://your-gcp-project-id.appspot.com # Replace with your actual project ID
+
+    # Define necessary permissions for Workload Identity Federation.
+    permissions:
+      contents: 'read' # Required to read the repository contents.
+      id-token: 'write' # Required for Google Cloud's Workload Identity Federation.
+
+    steps:
+      # Step 1: Authenticate to Google Cloud using Workload Identity Federation.
+      # This is the recommended secure way to authenticate GitHub Actions to GCP.
+      # IMPORTANT: You MUST set up Workload Identity Federation in your GCP project first.
+      # See the "Important GCP Setup" section below for details.
+      - name: 'Authenticate to Google Cloud'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          # Your Google Cloud Project ID. Store this as a GitHub Secret (e.g., GCP_PROJECT_ID).
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          # The full resource name of your Workload Identity Provider.
+          # Store this as a GitHub Secret (e.g., GCP_WORKLOAD_IDENTITY_PROVIDER).
+          # Format: projects/<project-number>/locations/global/workloadIdentityPools/<pool-id>/providers/<provider-id>
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          # The email of the Google Cloud Service Account that will perform the deployment.
+          # This service account needs at least the 'App Engine Deployer' IAM role.
+          # Store this as a GitHub Secret (e.g., GCP_SERVICE_ACCOUNT_EMAIL).
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT_EMAIL }}
+
+      # Step 2: Set up the gcloud CLI on the runner.
+      - name: 'Set up gcloud CLI'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        # Optional: You can specify a gcloud version here if needed.
+
+      # Step 3: Deploy the application to Google App Engine.
+      # This command uses the gcloud CLI to deploy your app.yaml and associated files.
+      # Ensure your app.yaml and requirements.txt are in the root of your repository.
+      - name: 'Deploy to Google App Engine'
+        run: gcloud app deploy app.yaml --project ${{ secrets.GCP_PROJECT_ID }} --quiet
+        # '--project': Specifies the GCP project ID.
+        # '--quiet': Prevents interactive prompts during deployment, essential for CI/CD.
