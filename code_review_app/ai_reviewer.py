@@ -1,6 +1,8 @@
 from google.cloud import aiplatform
 from google.cloud.aiplatform.gapic.schema import predict
 import google.generativeai as genai
+from google.auth import default
+from google.auth.transport.requests import Request
 
 def initialize_vertex_ai():
     """
