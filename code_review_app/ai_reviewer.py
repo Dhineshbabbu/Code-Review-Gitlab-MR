@@ -29,6 +29,12 @@ def call_vertex_ai_model(prompt):
     #     "content": prompt,
     #     "role": "user"
     # }])
+    SCOPES = ["https://www.googleapis.com/auth/cloud-platform"] 
+    credentials, _ = default()
+    scoped_credentials = credentials.with_scopes(SCOPES)
+
+    # Configure generative AI client with scoped credentials
+    genai.configure(credentials=scoped_credentials)
     model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-001")
     response = model.generate_content(prompt)
     
