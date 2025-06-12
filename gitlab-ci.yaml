@@ -22,6 +22,9 @@ steps:
       - $_DEPLOY_REGION
       - '--platform'
       - $_PLATFORM
+      - '--allow-unauthenticated'
+      - '--service-account'
+      - 'vertex-ai-prompt@agent-development-461516.iam.gserviceaccount.com'
     entrypoint: gcloud
 
 timeout: 1200s
