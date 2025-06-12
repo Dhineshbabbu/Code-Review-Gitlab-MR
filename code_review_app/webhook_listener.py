@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import requests
 
 # GitLab project info and token
-GITLAB_TOKEN = "glpat-U2ZgNMXY1Rs4qe8U_7hv"  # Replace with your actual token
+GITLAB_TOKEN = "glpat-Fpx6UpP3rTdJ3PHoycB8"  # Replace with your actual token
 def gitlab_webhook():
     data = request.json
 
