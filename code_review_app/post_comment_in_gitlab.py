@@ -1,7 +1,7 @@
 import gitlab
 
 GITLAB_URL = 'https://gitlab.com' 
-PRIVATE_TOKEN = 'glpat-Fpx6UpP3rTdJ3PHoycB8'
+PRIVATE_TOKEN = 'glpat-U2ZgNMXY1Rs4qe8U_7hv'
 
 def post_comment_in_gitlab(FILE_PATH , MERGE_REQUEST_IID , PROJECT_ID  , COMMENT_TEXT):
     
