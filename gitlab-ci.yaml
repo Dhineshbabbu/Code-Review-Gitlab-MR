@@ -8,7 +8,7 @@ steps:
       - '-c'
       - |
         pip install -r requirements.txt
-        python main.py
+        python app.py
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy']
