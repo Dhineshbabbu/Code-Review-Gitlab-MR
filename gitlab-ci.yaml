@@ -19,7 +19,7 @@ steps:
     args:
       - '-c'
       - |
-        export GOOGLE_APPLICATION_CREDENTIALS=$PWD/agent-development-461516-c58cccfe9b84.json
+        export GOOGLE_APPLICATION_CREDENTIALS=/agent-development-461516-c58cccfe9b84.json
         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
 
   # 🚀 Deploy to Cloud Run
