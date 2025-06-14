@@ -1,6 +1,6 @@
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['auth', 'activate-service-account', '--key-file=/agent-development-461516-c58cccfe9b84.json']
+    args: ['auth', 'activate-service-account', '--key-file=/workspace/agent-development-461516-c58cccfe9b84.json']
 
   - name: 'python'
     entrypoint: 'bash'
@@ -18,6 +18,6 @@ options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
 substitutions:
-  _GOOGLE_APPLICATION_CREDENTIALS: '/agent-development-461516-c58cccfe9b84.json'
+  _GOOGLE_APPLICATION_CREDENTIALS: '/workspace/agent-development-461516-c58cccfe9b84.json'
 
 timeout: '600s'
