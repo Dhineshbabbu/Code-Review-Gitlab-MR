@@ -1,23 +1,19 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['auth', 'activate-service-account', '--key-file=/workspace/agent-development-461516-c58cccfe9b84.json']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/your-app', '.']
 
-  - name: 'python'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        pip install -r requirements.txt
-        python app.py
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/your-app']
 
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy']
+    args: ['run', 'deploy', 'your-app',
+           '--image=gcr.io/$PROJECT_ID/your-app',
+           '--platform=managed',
+           '--allow-unauthenticated',
+           '--region=us-central1',
+           '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/app/key.json']
 
 options:
   logging: CLOUD_LOGGING_ONLY
-  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-
-substitutions:
-  _GOOGLE_APPLICATION_CREDENTIALS: '/workspace/agent-development-461516-c58cccfe9b84.json'
 
 timeout: '600s'
