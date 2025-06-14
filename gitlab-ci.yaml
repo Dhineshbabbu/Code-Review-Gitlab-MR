@@ -1,16 +1,28 @@
 steps:
+  # 🏗️ Build Docker image
   - name: gcr.io/cloud-builders/docker
     args:
       - build
       - '-t'
       - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
-      - .
+      - '.'
 
+  # 🚀 Push Docker image to Artifact Registry
   - name: gcr.io/cloud-builders/docker
     args:
       - push
       - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
 
+  # 🔑 Authenticate using Service Account Key (Direct File Reference)
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        export GOOGLE_APPLICATION_CREDENTIALS=$PWD/agent-development-461516-c58cccfe9b84.json
+        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+
+  # 🚀 Deploy to Cloud Run
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     args:
       - run
