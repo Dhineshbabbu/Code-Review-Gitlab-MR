@@ -1,48 +1,16 @@
 steps:
-  # 🏗️ Build Docker image
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - build
-      - '-t'
-      - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
-      - '.'
-
-  # 🚀 Push Docker image to Artifact Registry
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - push
-      - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
-
-  # 🔑 Authenticate using Service Account Key (Fix: Direct Path)
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    entrypoint: bash
+  - name: 'python'
+    entrypoint: 'bash'
     args:
       - '-c'
       - |
-        export GOOGLE_APPLICATION_CREDENTIALS=/workspace/agent-development-461516-c58cccfe9b84.json
-        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+        pip install -r requirements.txt
+        python app.py
 
-  # 🚀 Deploy to Cloud Run
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    args:
-      - run
-      - deploy
-      - $_SERVICE_NAME
-      - '--image'
-      - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
-      - '--region'
-      - $_DEPLOY_REGION
-      - '--platform'
-      - $_PLATFORM
-      - '--allow-unauthenticated'
-      - '--service-account'
-      - '279740301509-compute@developer.gserviceaccount.com'
-    entrypoint: gcloud
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy']
 
-timeout: 1200s
+substitutions:
+  _GOOGLE_APPLICATION_CREDENTIALS: 'agent-development-461516-c58cccfe9b84.json'
 
-images:
-  - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+timeout: '600s'
