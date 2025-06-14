@@ -14,8 +14,7 @@ steps:
     args: ['app', 'deploy']
 
 options:
-  logging: GCS_ONLY
-  logsBucket: gs://your-build-logs-bucket
+  logging: CLOUD_LOGGING_ONLY
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
 substitutions:
