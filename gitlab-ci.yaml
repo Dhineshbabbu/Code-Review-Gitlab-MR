@@ -13,7 +13,7 @@ steps:
       - push
       - '$_AR_HOSTNAME/$_AR_PROJECT_ID/$_AR_REPOSITORY/$_SERVICE_NAME:$COMMIT_SHA'
 
-  # 🔑 Authenticate using Service Account Key (Direct File Reference)
+  # 🔑 Authenticate using Service Account Key (Fix: Direct Path)
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: bash
     args:
