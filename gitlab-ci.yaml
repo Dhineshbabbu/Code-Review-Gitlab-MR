@@ -12,7 +12,7 @@ steps:
     waitFor: ['fetch-json']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/your-app']
+    args: ['push', 'gcr.io/$PROJECT_ID/code-review-app']
     waitFor: ['fetch-json']
 
   - name: 'gcr.io/cloud-builders/gcloud'
