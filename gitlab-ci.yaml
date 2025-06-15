@@ -12,7 +12,13 @@ steps:
       '--region=us-central1',
       '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/workspace/agent-development-461516-c58cccfe9b84.json'
     ]
-
+    
+   - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "GOOGLE_APPLICATION_CREDENTIALS is set to: $GOOGLE_APPLICATION_CREDENTIALS"
 options:
   logging: CLOUD_LOGGING_ONLY
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
