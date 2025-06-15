@@ -10,7 +10,7 @@ steps:
       '--platform=managed',
       '--allow-unauthenticated',
       '--region=us-central1',
-      '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/workspace/key.json'
+      '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/workspace/agent-development-461516-c58cccfe9b84.json'
     ]
 
 options:
