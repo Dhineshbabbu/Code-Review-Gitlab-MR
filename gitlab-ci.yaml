@@ -1,11 +1,12 @@
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['secrets', 'versions', 'access', 'latest', '--secret=service-account-key']
     id: 'fetch-json'
-    waitFor: ['-'] # This ensures it runs first
+    waitFor: ['-']
     entrypoint: 'bash'
-    script: |
-      gcloud secrets versions access latest --secret=service-account-key > /workspace/key.json
+    args:
+      - '-c'
+      - |
+        gcloud secrets versions access latest --secret=service-account-key > /workspace/key.json
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/code-review-gitlab', '.']
