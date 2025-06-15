@@ -1,17 +1,28 @@
 steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['secrets', 'versions', 'access', 'latest', '--secret=service-account-key']
+    id: 'fetch-json'
+    waitFor: ['-'] # This ensures it runs first
+    entrypoint: 'bash'
+    script: |
+      gcloud secrets versions access latest --secret=service-account-key > /workspace/key.json
+
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/your-app', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/code-review-gitlab', '.']
+    waitFor: ['fetch-json']
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/your-app']
+    waitFor: ['fetch-json']
 
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['run', 'deploy', 'your-app',
-           '--image=gcr.io/$PROJECT_ID/your-app',
+    args: ['run', 'deploy', 'code-review-gitlab',
+           '--image=gcr.io/$PROJECT_ID/code-review-gitlab',
            '--platform=managed',
            '--allow-unauthenticated',
            '--region=us-central1',
-           '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/app/key.json']
+           '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/workspace/key.json']
+    waitFor: ['fetch-json']
 
 options:
   logging: CLOUD_LOGGING_ONLY
