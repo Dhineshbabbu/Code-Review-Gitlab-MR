@@ -22,7 +22,7 @@ steps:
            '--platform=managed',
            '--allow-unauthenticated',
            '--region=us-central1',
-           '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/app/key.json',
+           '--set-env-vars=GOOGLE_APPLICATION_CREDENTIALS=/workspace/key.json',
            '--service-account=dhineshbabbu1026@gmail.com']
     waitFor: ['fetch-json']
 
