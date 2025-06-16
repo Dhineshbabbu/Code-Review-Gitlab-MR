@@ -37,7 +37,7 @@ def call_vertex_ai_model(prompt):
 
     # Configure generative AI client with scoped credentials
     genai.configure(credentials=scoped_credentials)
-    model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-001")
+    model = genai.GenerativeModel(model_name="models/gemini-2.0-flash")
     response = model.generate_content(prompt)
     
     
